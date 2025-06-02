@@ -1,0 +1,801 @@
+﻿@page "/"
+
+<PageTitle>Home - Qalakar</PageTitle>
+
+<div class="hero-section">
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="/videos/photography-bg.mp4" type="video/mp4">
+            <source src="/videos/photography-bg.webm" type="video/webm">
+            <!-- Fallback for browsers that don't support video -->
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+        <h1 class="hero-title">Qalakar</h1>
+        <p class="hero-subtitle">Where Photography Talent Meets Opportunity</p>
+        <p class="hero-description">Connect talented photographers with clients, discover amazing gigs, and explore our premium stock photo collection.</p>
+        
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <h3>Welcome to Qalakar</h3>
+                <p>Discover amazing photography opportunities, connect with talented photographers, and explore our premium stock photo collection.</p>
+                <div class="action-buttons">
+                    <a href="/auth" class="btn btn-primary">Get Started</a>
+                    <a href="/signup" class="btn btn-outline">Join Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <h2>Everything You Need for Photography Success</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h4>For Photographers</h4>
+                <p>Upload your portfolio, showcase your gigs, and connect with clients looking for your unique style and expertise.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h4>For Clients</h4>
+                <p>Post photography opportunities, browse talented photographers, and find the perfect match for your project needs.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🖼️</div>
+                <h4>Stock Photos</h4>
+                <p>Access thousands of high-quality stock images. Upload your photos to earn or download premium content for your projects.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="how-it-works-section">
+    <div class="container">
+        <h2>How Qalakar Works</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Create Your Profile</h4>
+                <p>Sign up as a photographer or client and build your professional profile with portfolio and requirements.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Discover & Connect</h4>
+                <p>Photographers can browse opportunities while clients can explore talent portfolios and previous work.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Collaborate & Succeed</h4>
+                <p>Work together on amazing projects and build lasting professional relationships in the photography community.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">2,500+</div>
+                <div class="stat-label">Active Photographers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1,200+</div>
+                <div class="stat-label">Completed Projects</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50,000+</div>
+                <div class="stat-label">Stock Photos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Client Satisfaction</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="founder-section">
+    <div class="container">
+        <div class="founder-content">
+            <div class="founder-image">
+                <img src="/images/founder-photo.jpg" alt="Founder of Qalakar" class="founder-photo" />
+                <div class="founder-badge">
+                    <span class="founder-title">Founder & CEO</span>
+                </div>
+            </div>
+            <div class="founder-message">
+                <h2>A Message from Our Founder</h2>
+                <blockquote>
+                    <p>"Photography is more than just capturing moments – it's about telling stories, creating connections, and preserving memories that last a lifetime. When I started Qalakar, my vision was simple: to create a platform where talented photographers could showcase their work and connect with clients who truly value their artistry."</p>
+                    
+                    <p>"Today, I'm proud to see thousands of photographers building their careers on our platform, from wedding specialists to commercial artists, each bringing their unique perspective to the world. Qalakar isn't just a marketplace – it's a community where creativity thrives and dreams become reality."</p>
+                    
+                    <p>"Whether you're a photographer looking to expand your reach or a client seeking the perfect artist for your project, Qalakar is here to make those connections meaningful and successful. Together, we're building the future of photography, one frame at a time."</p>
+                </blockquote>
+                
+                <div class="founder-signature">
+                    <div class="signature-line">
+                        <span class="signature-name">Muhammad Usman</span>
+                        <span class="signature-title">Founder & CEO, Qalakar</span>
+                    </div>
+                    <div class="founder-credentials">
+                        <span class="credential">Professional Photographer for 5+ Years</span>
+                        <span class="credential">Former Creative Director at PhotoCorp</span>
+                        <span class="credential">Winner of International Photography Awards</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        position: relative;
+        color: white;
+        padding: 6rem 2rem;
+        text-align: center;
+        margin: -1.1rem -2rem 4rem -2rem;
+        overflow: hidden;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .video-background video {
+        position: absolute;
+        top: 70%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+        filter: brightness(0.4) contrast(1.2);
+    }
+
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.15) 75%, 
+            rgba(30, 64, 175, 0.1) 100%, 
+            rgba(59, 130, 246, 0.08) 75%);
+        z-index: 2;
+    }
+
+    /* Fallback gradient for when video doesn't load */
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        z-index: 0;
+    }
+
+    .hero-content {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 3;
+        width: 100%;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: white;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        letter-spacing: -0.025em;
+        line-height: 1.1;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        opacity: 0.95;
+        color: white;
+        line-height: 1.4;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-description {
+        font-size: 1.1rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        color: white;
+        line-height: 1.6;
+        font-weight: 400;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .welcome-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 0;
+        margin-top: 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .welcome-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.15) 0%, 
+            rgba(255, 255, 255, 0.05) 100%);
+        pointer-events: none;
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 2.5rem;
+        width: 100%;
+    }
+
+    .welcome-card h3 {
+        color: white;
+        margin-bottom: 1rem;
+        font-size: 1.6rem;
+        font-weight: 600;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .welcome-card p {
+        opacity: 0.95;
+        margin-bottom: 2rem;
+        color: white;
+        line-height: 1.6;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        font-weight: 500;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 14px 28px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-block;
+        font-size: 1rem;
+        letter-spacing: 0.025em;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+        color: #3b82f6;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+        background: rgba(255, 255, 255, 0.95);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        color: #1e40af;
+    }
+
+    .btn-outline {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.8);
+        transform: translateY(-3px);
+        color: white;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+    }
+
+    .features-section {
+        padding: 5rem 0;
+        background: linear-gradient(to bottom, #f8faff 0%, #ffffff 100%);
+    }
+
+    .how-it-works-section {
+        padding: 5rem 0;
+        background: linear-gradient(to bottom, #ffffff 0%, #f8faff 100%);
+    }
+
+    .stats-section {
+        padding: 4rem 0;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: white;
+    }
+
+    .founder-section {
+        padding: 6rem 0;
+        background: linear-gradient(to bottom, #f8faff 0%, #ffffff 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .founder-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .features-section h2, .how-it-works-section h2 {
+        text-align: center;
+        font-size: 2.8rem;
+        margin-bottom: 3.5rem;
+        color: #1e293b;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    .features-grid, .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    .feature-card, .step-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #f1f5f9;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before, .step-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    }
+
+    .feature-card:hover, .step-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        border-color: #e2e8f0;
+    }
+
+    .feature-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 auto 1.5rem auto;
+    }
+
+    .feature-card h4, .step-card h4 {
+        color: #1e293b;
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
+
+    .feature-card p, .step-card p {
+        color: #64748b;
+        line-height: 1.7;
+        font-size: 1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .stat-item {
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #3b82f6;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-label {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    .founder-section {
+        padding: 6rem 0;
+        background: linear-gradient(to bottom, #f8faff 0%, #ffffff 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .founder-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .founder-content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 4rem;
+        align-items: start;
+        position: relative;
+        z-index: 1;
+    }
+
+    .founder-image {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .founder-photo {
+        width: 280px;
+        height: 320px;
+        border-radius: 20px;
+        object-fit: cover;
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border: 3px solid white;
+    }
+
+    .founder-photo:hover {
+        transform: translateY(-8px);
+        box-shadow: 
+            0 30px 60px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.9);
+    }
+
+    .founder-badge {
+        margin-top: 1.5rem;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        text-align: center;
+    }
+
+    .founder-title {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .founder-message {
+        padding-left: 2rem;
+    }
+
+    .founder-message h2 {
+        color: #1e293b;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        letter-spacing: -0.025em;
+        line-height: 1.2;
+    }
+
+    .founder-message blockquote {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    .founder-message p {
+        color: #4b5563;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .founder-message p::before {
+        content: '"';
+        position: absolute;
+        left: 0;
+        top: -0.5rem;
+        font-size: 3rem;
+        color: #3b82f6;
+        font-family: serif;
+        opacity: 0.6;
+    }
+
+    .founder-message p:last-of-type::after {
+        content: '"';
+        font-size: 3rem;
+        color: #3b82f6;
+        font-family: serif;
+        opacity: 0.6;
+        margin-left: 0.25rem;
+    }
+
+    .founder-signature {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .signature-line {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .signature-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        letter-spacing: -0.025em;
+    }
+
+    .signature-title {
+        font-size: 1rem;
+        color: #3b82f6;
+        font-weight: 600;
+    }
+
+    .founder-credentials {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .credential {
+        font-size: 0.9rem;
+        color: #64748b;
+        padding-left: 1rem;
+        position: relative;
+    }
+
+    .credential::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: #3b82f6;
+        font-weight: bold;
+    }
+
+    /* Fallback image styling */
+    .founder-photo[src="/images/founder-photo.jpg"] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        font-size: 4rem;
+        font-weight: 300;
+    }
+
+    .founder-photo[src="/images/founder-photo.jpg"]::before {
+        content: "👤";
+        font-size: 6rem;
+    }
+
+    @@media (max-width: 968px) {
+        .founder-content {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .founder-message {
+            padding-left: 0;
+        }
+
+        .founder-message h2 {
+            font-size: 2rem;
+        }
+
+        .founder-photo {
+            width: 240px;
+            height: 280px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .founder-section {
+            padding: 4rem 0;
+        }
+
+        .founder-content {
+            gap: 2rem;
+        }
+
+        .founder-message p {
+            font-size: 1rem;
+            padding-left: 1rem;
+        }
+
+        .founder-photo {
+            width: 200px;
+            height: 240px;
+        }
+
+        .signature-line {
+            align-items: center;
+        }
+
+        .founder-credentials {
+            align-items: center;
+        }
+    }
+
+    /* Fallback for when video doesn't load */
+    .video-background::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            #3b82f6 0%, 
+            #1e40af 50%, 
+            #3b82f6 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .video-background video:not([src]) + .video-overlay,
+    .video-background:has(video[src=""]) .video-overlay {
+        background: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.25) 0%, 
+            rgba(30, 64, 175, 0.2) 50%, 
+            rgba(59, 130, 246, 0.15) 100%);
+    }
+
+    /* Enhanced mobile optimization */
+    @@media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.8rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+        }
+
+        .welcome-card {
+            min-height: auto;
+        }
+        
+        .welcome-content {
+            padding: 2rem 1.5rem;
+        }
+        
+        .video-background video {
+            /* On mobile, show a static background if video performance is poor */
+            display: none;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 220px;
+        }
+        
+        .hero-section {
+            padding: 4rem 1rem;
+            min-height: 100vh;
+        }
+    }
+
+    /* Prefers reduced motion - disable video */
+    @@media (prefers-reduced-motion: reduce) {
+        .video-background video {
+            display: none;
+        }
+    }
+
+    /* Better support for browsers without backdrop-filter */
+    @@supports not (backdrop-filter: blur(20px)) {
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    }
+</style>
