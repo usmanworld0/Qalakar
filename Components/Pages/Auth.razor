@@ -1,0 +1,389 @@
+@page "/auth"
+@using Qalakar.Services
+@inject FirebaseAuthService AuthService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Sign In - Qalakar</PageTitle>
+
+<div class="auth-container">
+    <div class="auth-wrapper">
+        <div class="form-container">
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Sign in to your account</p>
+            
+            <EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
+                <DataAnnotationsValidator />
+                
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <InputText @bind-Value="loginModel.Email" id="email" placeholder="Enter your email" class="form-input" />
+                    <ValidationMessage For="() => loginModel.Email" class="validation-message" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <InputText @bind-Value="loginModel.Password" id="password" type="password" placeholder="Enter your password" class="form-input" />
+                    <ValidationMessage For="() => loginModel.Password" class="validation-message" />
+                </div>
+                
+                <button type="submit" class="btn-signin" disabled="@isLoading">
+                    @if (isLoading) 
+                    { 
+                        <span class="spinner"></span>
+                        <span>Signing In...</span> 
+                    } 
+                    else 
+                    { 
+                        <span>Sign In</span> 
+                    }
+                </button>
+            </EditForm>
+            
+            @if (showResendVerification)
+            {
+                <div class="resend-verification">
+                    <a href="#" @onclick="HandleResendVerification" @onclick:preventDefault="true">
+                        Resend verification email
+                    </a>
+                </div>
+            }
+            
+            <div class="signup-link">
+                <p>Don't have an account? <a href="/signup">Create one here</a></p>
+            </div>
+        </div>
+    </div>
+    
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="message-container @(isSuccess ? "success" : "error")">
+            <div class="message-content">
+                <span class="message-icon">@(isSuccess ? "✓" : "⚠")</span>
+                <span>@message</span>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .auth-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        background: white;
+    }
+
+    .auth-wrapper {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 100%;
+        max-width: 450px;
+        animation: slideUp 0.6s ease-out;
+        border: 1px solid #e2e8f0;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-container {
+        padding: 48px 40px;
+    }
+
+    .form-container h1 {
+        text-align: center;
+        margin-bottom: 8px;
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 28px;
+        letter-spacing: -0.025em;
+    }
+
+    .subtitle {
+        text-align: center;
+        margin-bottom: 32px;
+        color: #64748b;
+        font-size: 16px;
+    }
+
+    .input-group {
+        margin-bottom: 24px;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #374151;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #f9fafb;
+        color: #1f2937;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-signin {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 8px;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-signin:hover:not(:disabled) {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-signin:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .resend-verification {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 16px;
+    }
+
+    .resend-verification a {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: color 0.3s ease;
+    }
+
+    .resend-verification a:hover {
+        color: #1e40af;
+        text-decoration: underline;
+    }
+
+    .signup-link {
+        text-align: center;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #e5e7eb;
+        color: #64748b;
+    }
+
+    .signup-link a {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .signup-link a:hover {
+        color: #1e40af;
+        text-decoration: underline;
+    }
+
+    .message-container {
+        margin-top: 24px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 450px;
+        animation: slideDown 0.4s ease-out;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+    }
+
+    .message-icon {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .message-container.success {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .message-container.success .message-icon {
+        color: #059669;
+    }
+
+    .message-container.error {
+        background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    .message-container.error .message-icon {
+        color: #dc2626;
+    }
+
+    .validation-message {
+        color: #dc2626;
+        font-size: 13px;
+        margin-top: 6px;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 480px) {
+        .auth-container {
+            padding: 16px;
+        }
+        
+        .form-container {
+            padding: 32px 24px;
+        }
+        
+        .form-container h1 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+@code {
+    private bool isLoading = false;
+    private bool showResendVerification = false;
+    private string message = "";
+    private bool isSuccess = false;
+
+    private LoginModel loginModel = new();
+
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+
+    private async Task HandleLogin()
+    {
+        isLoading = true;
+        showResendVerification = false;
+        message = "";
+        
+        var result = await AuthService.SignInAsync(loginModel.Email, loginModel.Password);
+        
+        if (result.Success)
+        {
+            ShowMessage("Welcome back! Redirecting...", true);
+            
+            // Trigger immediate JavaScript callback to Blazor
+            await JSRuntime.InvokeVoidAsync("eval", @"
+                if (window.blazorAuthStateProvider) {
+                    setTimeout(() => {
+                        window.blazorAuthStateProvider.invokeMethodAsync('OnFirebaseAuthStateChanged');
+                    }, 100);
+                }
+            ");
+            
+            // Shorter delay before navigation
+            await Task.Delay(500);
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            ShowMessage(result.Message, false);
+            if (result.Message.Contains("verify"))
+            {
+                showResendVerification = true;
+            }
+        }
+        
+        isLoading = false;
+    }
+
+    private async Task HandleResendVerification()
+    {
+        var result = await AuthService.ResendVerificationAsync();
+        ShowMessage(result.Message, result.Success);
+    }
+
+    private void ShowMessage(string msg, bool success)
+    {
+        message = msg;
+        isSuccess = success;
+        StateHasChanged();
+        
+        if (!success)
+        {
+            Task.Delay(6000).ContinueWith(_ =>
+            {
+                message = "";
+                InvokeAsync(StateHasChanged);
+            });
+        }
+    }
+
+    public class LoginModel
+    {
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Email is required")]
+        [System.ComponentModel.DataAnnotations.EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        public string Email { get; set; } = "";
+        
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Password is required")]
+        [System.ComponentModel.DataAnnotations.MinLength(6, ErrorMessage = "Password must be at least 6 characters long")]
+        public string Password { get; set; } = "";
+    }
+}

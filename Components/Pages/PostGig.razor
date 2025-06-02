@@ -1,0 +1,824 @@
+@page "/post-gig"
+@using Qalakar.Services
+@inject GigService GigService
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+@implements IDisposable
+
+<PageTitle>Post a Gig - Qalakar</PageTitle>
+
+@if (!AuthState.IsInitialized)
+{
+    <div class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner-large"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+}
+else if (!AuthState.IsAuthenticated)
+{
+    <div class="auth-required">
+        <div class="auth-message">
+            <h2>Authentication Required</h2>
+            <p>You need to be signed in to post a gig.</p>
+            <a href="/auth" class="btn-signin">Sign In</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="post-gig-container">
+        <div class="page-header">
+            <h1>Post a Photography Gig</h1>
+            <p>Share your photography opportunity with talented photographers</p>
+        </div>
+
+        <div class="form-wrapper">
+            <EditForm Model="gigModel" OnValidSubmit="HandleSubmit" FormName="postGigForm">
+                <DataAnnotationsValidator />
+                
+                <div class="form-sections">
+                    <div class="section">
+                        <h3>📸 Gig Details</h3>
+                        
+                        <div class="input-group">
+                            <label for="title">Gig Title</label>
+                            <InputText @bind-Value="gigModel.Title" id="title" placeholder="e.g., Wedding Photography at Beach Resort" class="form-input" />
+                            <ValidationMessage For="() => gigModel.Title" class="validation-message" />
+                        </div>
+
+                        <div class="input-group">
+                            <label for="description">Description</label>
+                            <InputTextArea @bind-Value="gigModel.Description" id="description" placeholder="Describe the photography gig, what you're looking for, and any specific requirements..." class="form-textarea" rows="4" />
+                            <ValidationMessage For="() => gigModel.Description" class="validation-message" />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="category">Category</label>
+                                <InputSelect @bind-Value="gigModel.Category" id="category" class="form-select">
+                                    <option value="">Select Category</option>
+                                    <option value="Wedding">Wedding</option>
+                                    <option value="Portrait">Portrait</option>
+                                    <option value="Event">Event</option>
+                                    <option value="Commercial">Commercial</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Product">Product</option>
+                                    <option value="Real Estate">Real Estate</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Nature">Nature</option>
+                                    <option value="Other">Other</option>
+                                </InputSelect>
+                                <ValidationMessage For="() => gigModel.Category" class="validation-message" />
+                            </div>
+
+                            <div class="input-group">
+                                <label for="budget">Budget ($)</label>
+                                <InputNumber @bind-Value="gigModel.Budget" id="budget" placeholder="1000" class="form-input" />
+                                <ValidationMessage For="() => gigModel.Budget" class="validation-message" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>📍 Location & Timing</h3>
+                        
+                        <div class="input-group">
+                            <label for="location">Location</label>
+                            <InputText @bind-Value="gigModel.Location" id="location" placeholder="e.g., New York, NY or Remote" class="form-input" />
+                            <ValidationMessage For="() => gigModel.Location" class="validation-message" />
+                        </div>
+
+                        <div class="input-group">
+                            <label>Available Dates</label>
+                            <div class="date-inputs">
+                                @for (int i = 0; i < availableDates.Count; i++)
+                                {
+                                    int index = i;
+                                    <div class="date-input-row">
+                                        <input type="date" @bind="availableDates[index]" class="form-input date-input" />
+                                        <button type="button" class="btn-remove-date" @onclick="() => RemoveDate(index)">×</button>
+                                    </div>
+                                }
+                                <button type="button" class="btn-add-date" @onclick="AddDate">+ Add Date</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>📋 Additional Information</h3>
+                        
+                        <div class="input-group">
+                            <label for="requirements">Special Requirements (Optional)</label>
+                            <InputTextArea @bind-Value="gigModel.Requirements" id="requirements" placeholder="Any special equipment, style preferences, or additional notes..." class="form-textarea" rows="3" />
+                        </div>
+
+                        <div class="input-group">
+                            <label for="contact">Contact Information</label>
+                            <InputText @bind-Value="gigModel.ContactInfo" id="contact" placeholder="Email or phone number for photographers to reach you" class="form-input" />
+                            <ValidationMessage For="() => gigModel.ContactInfo" class="validation-message" />
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>🖼️ Reference Image (Optional)</h3>
+                        
+                        <div class="image-upload">
+                            <InputFile OnChange="HandleImageUpload" class="file-input" accept=".jpg,.jpeg,.png,.gif" />
+                            <div class="upload-area">
+                                @if (!string.IsNullOrEmpty(gigModel.PhotoPath))
+                                {
+                                    <div class="image-preview">
+                                        <img src="@gigModel.PhotoPath" alt="Gig reference" />
+                                        <button type="button" class="btn-remove-image" @onclick="RemoveImage">×</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="upload-placeholder">
+                                        <span class="upload-icon">📷</span>
+                                        <p>Click to upload a reference image</p>
+                                        <small>PNG, JPG, GIF up to 5MB</small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" @onclick="Cancel">Cancel</button>
+                    <button type="submit" class="btn-submit" disabled="@isSubmitting">
+                        @if (isSubmitting)
+                        {
+                            <span class="spinner"></span>
+                            <span>Posting Gig...</span>
+                        }
+                        else
+                        {
+                            <span>Post Gig</span>
+                        }
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="message-container @(isSuccess ? "success" : "error")">
+        <div class="message-content">
+            <span class="message-icon">@(isSuccess ? "✓" : "⚠")</span>
+            <span>@message</span>
+        </div>
+    </div>
+}
+
+<style>
+    .auth-required {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        padding: 2rem;
+    }
+
+    .auth-message {
+        text-align: center;
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+    }
+
+    .auth-message h2 {
+        color: #1e293b;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .auth-message p {
+        color: #64748b;
+        margin-bottom: 2rem;
+    }
+
+    .btn-signin {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-signin:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+
+    .post-gig-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .page-header h1 {
+        color: #1e293b;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+
+    .form-wrapper {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+    }
+
+    .form-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    .section {
+        padding: 1.5rem;
+        border: 1px solid #f1f5f9;
+        border-radius: 16px;
+        background: #f8faff;
+    }
+
+    .section h3 {
+        color: #1e293b;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .input-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #374151;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .form-input, .form-textarea, .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .date-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .date-input-row {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .date-input {
+        flex: 1;
+    }
+
+    .btn-remove-date {
+        background: #fee2e2;
+        color: #dc2626;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .btn-remove-date:hover {
+        background: #fecaca;
+        transform: scale(1.1);
+    }
+
+    .btn-add-date {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 2px dashed #3b82f6;
+        border-radius: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+
+    .btn-add-date:hover {
+        background: #bfdbfe;
+        border-color: #1e40af;
+    }
+
+    .image-upload {
+        position: relative;
+    }
+
+    .file-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .upload-area {
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-area:hover {
+        border-color: #3b82f6;
+        background: #f8faff;
+    }
+
+    .upload-placeholder {
+        color: #64748b;
+    }
+
+    .upload-icon {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .image-preview {
+        position: relative;
+        display: inline-block;
+    }
+
+    .image-preview img {
+        max-width: 200px;
+        max-height: 150px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .btn-remove-image {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        font-size: 0.75rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-cancel, .btn-submit {
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        transform: translateY(-1px);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-submit:hover:not(:disabled) {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .validation-message {
+        color: #dc2626;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+    }
+
+    .message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 400px;
+        border-radius: 12px;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .message-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+    }
+
+    .message-icon {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .message-container.success {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .message-container.success .message-icon {
+        color: #059669;
+    }
+
+    .message-container.error {
+        background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    .message-container.error .message-icon {
+        color: #dc2626;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .loading-content {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+    }
+
+    .spinner-large {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e5e7eb;
+        border-top: 4px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem auto;
+    }
+
+    .loading-content p {
+        color: #64748b;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 768px) {
+        .post-gig-container {
+            padding: 1rem;
+        }
+
+        .form-wrapper {
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+@code {
+    private GigModel gigModel = new();
+    private List<DateTime> availableDates = new() { DateTime.Today.AddDays(1) };
+    private bool isSubmitting = false;
+    private string message = "";
+    private bool isSuccess = false;
+    private bool _hasRendered = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Subscribe to auth state changes
+        AuthState.OnAuthStateChanged += OnAuthStateChanged;
+        
+        // Initialize auth state without JavaScript calls
+        if (!AuthState.IsInitialized)
+        {
+            await AuthState.InitializeAsync();
+        }
+        
+        // Pre-fill user information if authenticated
+        UpdateUserInfo();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasRendered)
+        {
+            _hasRendered = true;
+            try
+            {
+                // Register this component with the auth state service after render
+                var objRef = DotNetObjectReference.Create(this);
+                await JSRuntime.InvokeVoidAsync("initializeAuthStateService", objRef);
+            }
+            catch
+            {
+                // Silent error handling for JavaScript interop
+            }
+        }
+    }
+
+    private void OnAuthStateChanged()
+    {
+        UpdateUserInfo();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdateUserInfo()
+    {
+        if (AuthState.IsAuthenticated && AuthState.CurrentUser != null)
+        {
+            gigModel.CreatedBy = AuthState.CurrentUser.Uid;
+            gigModel.CreatedByEmail = AuthState.CurrentUser.Email;
+            gigModel.ContactInfo = AuthState.CurrentUser.Email;
+        }
+    }
+
+    private void AddDate()
+    {
+        availableDates.Add(DateTime.Today.AddDays(1));
+    }
+
+    private void RemoveDate(int index)
+    {
+        if (availableDates.Count > 1)
+        {
+            availableDates.RemoveAt(index);
+        }
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            if (file != null)
+            {
+                if (file.Size > 5 * 1024 * 1024)
+                {
+                    ShowMessage("File size must be less than 5MB", false);
+                    return;
+                }
+
+                var fileName = $"gig_{DateTime.Now:yyyyMMdd_HHmmss}_{file.Name}";
+                var path = Path.Combine("wwwroot", "images", "gigs", fileName);
+                
+                var directory = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                using var stream = new FileStream(path, FileMode.Create);
+                await file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).CopyToAsync(stream);
+
+                gigModel.PhotoPath = $"/images/gigs/{fileName}";
+                ShowMessage("Image uploaded successfully!", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowMessage($"Error uploading image: {ex.Message}", false);
+        }
+    }
+
+    private void RemoveImage()
+    {
+        gigModel.PhotoPath = "";
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (!AuthState.IsAuthenticated)
+        {
+            ShowMessage("You must be signed in to post a gig", false);
+            return;
+        }
+
+        isSubmitting = true;
+        message = "";
+
+        try
+        {
+            gigModel.AvailabilityDates = availableDates.Where(d => d >= DateTime.Today).ToList();
+            gigModel.CreatedBy = AuthState.CurrentUser!.Uid;
+            gigModel.CreatedByEmail = AuthState.CurrentUser.Email;
+
+            if (!gigModel.AvailabilityDates.Any())
+            {
+                ShowMessage("Please add at least one future date", false);
+                return;
+            }
+
+            var result = await GigService.CreateGigAsync(gigModel);
+
+            if (result.Success)
+            {
+                ShowMessage("Gig posted successfully! Redirecting...", true);
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/my-gigs");
+            }
+            else
+            {
+                ShowMessage(result.Message, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowMessage($"Error posting gig: {ex.Message}", false);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void ShowMessage(string msg, bool success)
+    {
+        message = msg;
+        isSuccess = success;
+        StateHasChanged();
+
+        Task.Delay(4000).ContinueWith(_ =>
+        {
+            message = "";
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnAuthStateChanged -= OnAuthStateChanged;
+    }
+
+    public class GigModel
+    {
+        [Required(ErrorMessage = "Title is required")]
+        public string Title { get; set; } = "";
+
+        [Required(ErrorMessage = "Description is required")]
+        public string Description { get; set; } = "";
+
+        [Required(ErrorMessage = "Category is required")]
+        public string Category { get; set; } = "";
+
+        [Required(ErrorMessage = "Budget is required")]
+        [Range(1, double.MaxValue, ErrorMessage = "Budget must be greater than 0")]
+        public decimal Budget { get; set; }
+
+        [Required(ErrorMessage = "Location is required")]
+        public string Location { get; set; } = "";
+
+        public List<DateTime> AvailabilityDates { get; set; } = new();
+
+        public string Requirements { get; set; } = "";
+
+        [Required(ErrorMessage = "Contact information is required")]
+        public string ContactInfo { get; set; } = "";
+
+        public string PhotoPath { get; set; } = "";
+        public string CreatedBy { get; set; } = "";
+        public string CreatedByEmail { get; set; } = "";
+    }
+}

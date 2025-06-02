@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="Qalakar.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet />
+</head>
+
+<body>
+    @using Microsoft.AspNetCore.Components.Authorization
+
+    <CascadingAuthenticationState>
+        <Routes />
+    </CascadingAuthenticationState>
+
+    <script src="_framework/blazor.web.js"></script>
+    <script type="module" src="js/firebase-config.js" 
+            onerror="console.error('Firebase config failed to load')"
+            onload="console.log('Firebase config loaded successfully')"></script>
+    
+    <script>
+        // Enhanced Firebase initialization with persistence
+        window.firebaseLoading = true;
+        window.blazorAuthStateService = null;
+        
+        // Function to initialize auth state service
+        window.initializeAuthStateService = (dotNetRef) => {
+            window.blazorAuthStateService = dotNetRef;
+            console.log('Blazor auth state service initialized');
+        };
+        
+        // Set up a timeout to mark Firebase as failed if it takes too long
+        setTimeout(() => {
+            if (window.firebaseLoading && typeof window.firebaseAuth === 'undefined') {
+                console.error('Firebase failed to load within timeout');
+                window.firebaseLoading = false;
+            }
+        }, 10000); // Increased timeout
+        
+        // Monitor when Firebase is ready and set up persistence
+        const checkFirebase = setInterval(() => {
+            if (typeof window.firebaseAuth !== 'undefined') {
+                console.log('Firebase is ready, setting up persistence');
+                window.firebaseLoading = false;
+                clearInterval(checkFirebase);
+                
+                // Enable Firebase auth persistence (this persists across browser sessions)
+                if (window.firebaseAuth.setPersistence) {
+                    try {
+                        // Enable local persistence (survives browser restart)
+                        window.firebaseAuth.setPersistence('local');
+                        console.log('Firebase auth persistence enabled');
+                    } catch (error) {
+                        console.warn('Could not set Firebase persistence:', error);
+                    }
+                }
+            }
+        }, 100);
+    </script>
+</body>
+
+</html>

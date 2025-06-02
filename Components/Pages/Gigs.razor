@@ -1,0 +1,607 @@
+@page "/gigs"
+@using Qalakar.Services
+@inject GigService GigService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Browse Gigs - Qalakar</PageTitle>
+
+<div class="gigs-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Photography Opportunities</h1>
+            <p>Discover amazing gigs and connect with clients</p>
+        </div>
+        
+        <div class="search-filters">
+            <div class="search-bar">
+                <input @bind="searchTerm" @oninput="HandleSearch" placeholder="Search gigs..." class="search-input" />
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <select @bind="selectedCategory" class="category-filter">
+                <option value="">All Categories</option>
+                <option value="Wedding">Wedding</option>
+                <option value="Portrait">Portrait</option>
+                <option value="Event">Event</option>
+                <option value="Product">Product</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Food">Food</option>
+                <option value="Corporate">Corporate</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <div class="loading-content">
+                <div class="spinner-large"></div>
+                <p>Loading gigs...</p>
+            </div>
+        </div>
+    }
+    else if (filteredGigs.Any())
+    {
+        <div class="gigs-grid">
+            @foreach (var gig in filteredGigs)
+            {
+                <div class="gig-card" @onclick="() => ViewGigDetails(gig)">
+                    @if (!string.IsNullOrEmpty(gig.ImageUrl))
+                    {
+                        <div class="gig-image">
+                            <img src="@gig.ImageUrl" 
+                                 alt="@gig.Title" 
+                                 loading="lazy"
+                                 @onerror="@(() => HandleImageError(gig))"
+                                 style="@(imageErrors.Contains(gig.Id) ? "display:none;" : "")" />
+                            @if (imageErrors.Contains(gig.Id))
+                            {
+                                <div class="image-error">
+                                    <div class="error-icon">🖼️</div>
+                                    <span>Image not available</span>
+                                </div>
+                            }
+                            <div class="category-badge">@gig.Category</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="gig-image-placeholder">
+                            <div class="placeholder-content">
+                                <div class="placeholder-icon">📸</div>
+                                <span class="placeholder-text">No Image</span>
+                            </div>
+                            <div class="category-badge">@gig.Category</div>
+                        </div>
+                    }
+                    
+                    <div class="gig-content">
+                        <div class="gig-header">
+                            <h4>@gig.Title</h4>
+                            <div class="budget-badge">$@gig.Budget</div>
+                        </div>
+                        
+                        <p class="gig-description">@gig.Description</p>
+                        
+                        <div class="gig-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">📍</span>
+                                <span class="meta-value">@gig.Location</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">👤</span>
+                                <span class="meta-value">@gig.CreatedByEmail</span>
+                            </div>
+                        </div>
+                        
+                        @if (gig.Dates?.Any() == true)
+                        {
+                            <div class="available-dates">
+                                <h5>Available Dates</h5>
+                                <div class="dates-list">
+                                    @foreach (var date in gig.Dates.Take(2))
+                                    {
+                                        <span class="date-tag">@date.ToString("MMM dd, yyyy")</span>
+                                    }
+                                    @if (gig.Dates.Count > 2)
+                                    {
+                                        <span class="more-dates">+@(gig.Dates.Count - 2) more</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        
+                        <div class="gig-footer">
+                            <span class="posted-date">Posted @gig.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            <button class="btn-contact" @onclick="() => ContactClient(gig)" @onclick:stopPropagation="true">
+                                Contact Client
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>No Gigs Found</h3>
+            <p>@(string.IsNullOrEmpty(searchTerm) && string.IsNullOrEmpty(selectedCategory) ? 
+                "No gigs have been posted yet. Check back later!" : 
+                "No gigs match your search criteria. Try adjusting your filters.")</p>
+            @if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(selectedCategory))
+            {
+                <button class="btn-clear-filters" @onclick="ClearFilters">Clear Filters</button>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .gigs-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: linear-gradient(to bottom, #f8faff 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .page-header {
+        margin-bottom: 3rem;
+        padding: 2.5rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+        border: 1px solid #f1f5f9;
+    }
+
+    .header-content {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .header-content h1 {
+        color: #1e293b;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-content p {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+
+    .search-filters {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .search-bar {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 45px 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    .category-filter {
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        min-width: 150px;
+        transition: all 0.3s ease;
+    }
+
+    .category-filter:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .gigs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 2rem;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .gig-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #f1f5f9;
+        cursor: pointer;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    .gig-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        border-color: #e2e8f0;
+    }
+
+    .gig-image, .gig-image-placeholder {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+    .gig-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        display: block;
+    }
+
+    .gig-card:hover .gig-image img {
+        transform: scale(1.05);
+    }
+
+    .image-error {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8faff 0%, #e0f2fe 100%);
+        color: #64748b;
+        font-size: 0.9rem;
+        gap: 0.5rem;
+    }
+
+    .error-icon {
+        font-size: 2rem;
+        opacity: 0.6;
+    }
+
+    .gig-image-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8faff 0%, #e0f2fe 100%);
+    }
+
+    .placeholder-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        color: #64748b;
+    }
+
+    .placeholder-icon {
+        font-size: 3rem;
+        opacity: 0.6;
+    }
+
+    .placeholder-text {
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0.8;
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+        color: #3b82f6;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 2;
+    }
+
+    .gig-content {
+        padding: 1.5rem;
+    }
+
+    .gig-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .gig-header h4 {
+        color: #1e293b;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.3;
+        flex: 1;
+    }
+
+    .budget-badge {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .gig-description {
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .gig-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .meta-icon {
+        font-size: 1rem;
+    }
+
+    .available-dates {
+        margin-bottom: 1.5rem;
+    }
+
+    .available-dates h5 {
+        color: #374151;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .dates-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .date-tag, .more-dates {
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        color: #0284c7;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: 1px solid #7dd3fc;
+    }
+
+    .more-dates {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        color: #64748b;
+        border-color: #cbd5e1;
+    }
+
+    .gig-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .posted-date {
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+
+    .btn-contact {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-contact:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .loading-section {
+        text-align: center;
+        padding: 4rem;
+    }
+
+    .spinner-large {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e5e7eb;
+        border-top: 4px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem auto;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: #1e293b;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #64748b;
+    }
+
+    @@media (max-width: 768px) {
+        .gigs-container {
+            padding: 1rem;
+        }
+
+        .gigs-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+@code {
+    private List<GigModel> allGigs = new();
+    private List<GigModel> filteredGigs = new();
+    private bool isLoading = true;
+    private string searchTerm = "";
+    private string selectedCategory = "";
+    private HashSet<string> imageErrors = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGigs();
+    }
+
+    private async Task LoadGigs()
+    {
+        isLoading = true;
+        imageErrors.Clear();
+        StateHasChanged();
+
+        try
+        {
+            allGigs = await GigService.GetGigsAsync();
+            filteredGigs = allGigs.ToList();
+            
+            // Debug: Log image URLs
+            foreach (var gig in allGigs.Where(g => !string.IsNullOrEmpty(g.ImageUrl)))
+            {
+                await JSRuntime.InvokeVoidAsync("console.log", $"Browse Gig '{gig.Title}' image URL: {gig.ImageUrl}");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", $"Error loading gigs: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void HandleImageError(GigModel gig)
+    {
+        imageErrors.Add(gig.Id);
+        StateHasChanged();
+        
+        JSRuntime.InvokeVoidAsync("console.error", $"Failed to load image for browse gig '{gig.Title}': {gig.ImageUrl}");
+    }
+
+    private void HandleSearch(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString() ?? "";
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        filteredGigs = allGigs.Where(gig =>
+            (string.IsNullOrEmpty(searchTerm) || gig.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+             gig.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+             gig.Location.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) &&
+            (string.IsNullOrEmpty(selectedCategory) || gig.Category == selectedCategory)
+        ).ToList();
+        
+        StateHasChanged();
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = "";
+        selectedCategory = "";
+        filteredGigs = allGigs.ToList();
+        StateHasChanged();
+    }
+
+    private void ViewGigDetails(GigModel gig)
+    {
+        // Navigate to gig details page (implement later)
+        JSRuntime.InvokeVoidAsync("console.log", $"Viewing details for gig: {gig.Title}");
+    }
+
+    private async Task ContactClient(GigModel gig)
+    {
+        // Implement contact functionality
+        await JSRuntime.InvokeVoidAsync("alert", $"Contact feature coming soon! Client: {gig.CreatedByEmail}");
+    }
+}

@@ -1,0 +1,253 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Qalakar.bundle.scp.css",
+      "PackagePath": "staticwebassets\\Qalakar.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\images\\founder-photo.jpg",
+      "PackagePath": "staticwebassets\\images\\founder-photo.jpg"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\images\\gigs\\gig_20250602_223608_wedding.avif",
+      "PackagePath": "staticwebassets\\images\\gigs\\gig_20250602_223608_wedding.avif"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\images\\gigs\\gig_20250603_000117_birthday.avif",
+      "PackagePath": "staticwebassets\\images\\gigs\\gig_20250603_000117_birthday.avif"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\images\\gigs\\gig_20250603_034351_2.jpg",
+      "PackagePath": "staticwebassets\\images\\gigs\\gig_20250603_034351_2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\images\\stock\\stock_20250603_012120_1.jpg",
+      "PackagePath": "staticwebassets\\images\\stock\\stock_20250603_012120_1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\js\\firebase-config.js",
+      "PackagePath": "staticwebassets\\js\\firebase-config.js"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\uploads\\gigs\\060f08b1-df97-4ee7-93db-121808a95e39_birthday.avif",
+      "PackagePath": "staticwebassets\\uploads\\gigs\\060f08b1-df97-4ee7-93db-121808a95e39_birthday.avif"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\uploads\\gigs\\23590187-4eb1-43a0-b68b-e9b6bca3128b_wedding.avif",
+      "PackagePath": "staticwebassets\\uploads\\gigs\\23590187-4eb1-43a0-b68b-e9b6bca3128b_wedding.avif"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\uploads\\gigs\\58c001a7-1b39-46f4-b372-9ba61ff3ba73_wedding.avif",
+      "PackagePath": "staticwebassets\\uploads\\gigs\\58c001a7-1b39-46f4-b372-9ba61ff3ba73_wedding.avif"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\uploads\\gigs\\9d8411c8-2363-4313-9891-1f8082773e56_wedding.avif",
+      "PackagePath": "staticwebassets\\uploads\\gigs\\9d8411c8-2363-4313-9891-1f8082773e56_wedding.avif"
+    },
+    {
+      "Id": "C:\\Users\\23156\\Desktop\\Qalakar\\Qalakar\\wwwroot\\videos\\photography-bg.mp4",
+      "PackagePath": "staticwebassets\\videos\\photography-bg.mp4"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Qalakar.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.Qalakar.props",
+      "PackagePath": "build\\Qalakar.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.Qalakar.props",
+      "PackagePath": "buildMultiTargeting\\Qalakar.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.Qalakar.props",
+      "PackagePath": "buildTransitive\\Qalakar.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
