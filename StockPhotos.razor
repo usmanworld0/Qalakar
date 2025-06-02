@@ -1,0 +1,740 @@
+@page "/stock-photos"
+@using Qalakar.Services
+@inject StockPhotoService StockPhotoService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Stock Photos - Qalakar</PageTitle>
+
+<div class="stock-photos-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Stock Photos</h1>
+            <p>Discover high-quality photography for your projects</p>
+        </div>
+        
+        <div class="search-filters">
+            <div class="search-bar">
+                <input @bind="searchTerm" @oninput="HandleSearch" placeholder="Search photos..." class="search-input" />
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <select @bind="selectedCategory" class="category-filter">
+                <option value="">All Categories</option>
+                <option value="Nature">Nature</option>
+                <option value="Architecture">Architecture</option>
+                <option value="People">People</option>
+                <option value="Technology">Technology</option>
+                <option value="Food">Food</option>
+                <option value="Travel">Travel</option>
+                <option value="Business">Business</option>
+                <option value="Abstract">Abstract</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <div class="loading-content">
+                <div class="spinner-large"></div>
+                <p>Loading photos...</p>
+            </div>
+        </div>
+    }
+    else if (filteredPhotos.Any())
+    {
+        <div class="photos-grid">
+            @foreach (var photo in filteredPhotos)
+            {
+                <div class="photo-card" @onclick="() => ViewPhotoDetails(photo)">
+                    @if (!string.IsNullOrEmpty(photo.ImageUrl))
+                    {
+                        <div class="photo-image">
+                            <img src="@photo.ImageUrl" 
+                                 alt="@photo.Title" 
+                                 loading="lazy"
+                                 @onerror="@(() => HandleImageError(photo))"
+                                 style="@(imageErrors.Contains(photo.Id) ? "display:none;" : "")" />
+                            @if (imageErrors.Contains(photo.Id))
+                            {
+                                <div class="image-error">
+                                    <div class="error-icon">🖼️</div>
+                                    <span>Image not available</span>
+                                </div>
+                            }
+                            <div class="category-badge">@photo.Category</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="photo-image-placeholder">
+                            <div class="placeholder-content">
+                                <div class="placeholder-icon">📸</div>
+                                <span class="placeholder-text">No Image</span>
+                            </div>
+                            <div class="category-badge">@photo.Category</div>
+                        </div>
+                    }
+                    
+                    <div class="photo-content">
+                        <div class="photo-header">
+                            <h4>@photo.Title</h4>
+                        </div>
+                        
+                        <p class="photo-description">@photo.Description</p>
+                        
+                        <div class="photo-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">👤</span>
+                                <span class="meta-value">@photo.UploadedByEmail</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">⬇️</span>
+                                <span class="meta-value">@photo.Downloads downloads</span>
+                            </div>
+                        </div>
+                        
+                        @if (photo.Tags?.Any() == true)
+                        {
+                            <div class="photo-tags">
+                                @foreach (var tag in photo.Tags.Take(3))
+                                {
+                                    <span class="tag">@tag</span>
+                                }
+                                @if (photo.Tags.Count > 3)
+                                {
+                                    <span class="more-tags">+@(photo.Tags.Count - 3) more</span>
+                                }
+                            </div>
+                        }
+                        
+                        <div class="photo-footer">
+                            <span class="uploaded-date">@photo.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            <button class="btn-download" @onclick="() => DownloadPhoto(photo)" @onclick:stopPropagation="true">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">📷</div>
+            <h3>No Photos Found</h3>
+            <p>@(string.IsNullOrEmpty(searchTerm) && string.IsNullOrEmpty(selectedCategory) ? 
+                "No photos have been uploaded yet. Check back later!" : 
+                "No photos match your search criteria. Try adjusting your filters.")</p>
+            @if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(selectedCategory))
+            {
+                <button class="btn-clear-filters" @onclick="ClearFilters">Clear Filters</button>
+            }
+        </div>
+    }
+</div>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="message-container @(isSuccess ? "success" : "error")">
+        <div class="message-content">
+            <span class="message-icon">@(isSuccess ? "✅" : "❌")</span>
+            <span>@message</span>
+        </div>
+    </div>
+}
+
+<style>
+    .stock-photos-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: linear-gradient(to bottom, #f8faff 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .page-header {
+        margin-bottom: 3rem;
+        padding: 2.5rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+        border: 1px solid #f1f5f9;
+    }
+
+    .header-content {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .header-content h1 {
+        color: #1e293b;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-content p {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+
+    .search-filters {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .search-bar {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 45px 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    .category-filter {
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        min-width: 150px;
+        transition: all 0.3s ease;
+    }
+
+    .category-filter:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .photos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .photo-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #f1f5f9;
+        cursor: pointer;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    .photo-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        border-color: #e2e8f0;
+    }
+
+    .photo-image, .photo-image-placeholder {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+    .photo-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        display: block;
+    }
+
+    .photo-card:hover .photo-image img {
+        transform: scale(1.05);
+    }
+
+    .image-error {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8faff 0%, #e0f2fe 100%);
+        color: #64748b;
+        font-size: 0.9rem;
+        gap: 0.5rem;
+    }
+
+    .error-icon {
+        font-size: 2rem;
+        opacity: 0.6;
+    }
+
+    .photo-image-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8faff 0%, #e0f2fe 100%);
+    }
+
+    .placeholder-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        color: #64748b;
+    }
+
+    .placeholder-icon {
+        font-size: 3rem;
+        opacity: 0.6;
+    }
+
+    .placeholder-text {
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0.8;
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+        color: #3b82f6;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 2;
+    }
+
+    .photo-content {
+        padding: 1.5rem;
+    }
+
+    .photo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .photo-header h4 {
+        color: #1e293b;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.3;
+        flex: 1;
+    }
+
+    .photo-description {
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .photo-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .meta-icon {
+        font-size: 1rem;
+    }
+
+    .photo-tags {
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .tag, .more-tags {
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        color: #0284c7;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: 1px solid #7dd3fc;
+    }
+
+    .more-tags {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        color: #64748b;
+        border-color: #cbd5e1;
+    }
+
+    .photo-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .uploaded-date {
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+
+    .btn-download {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-download:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+    }
+
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+    }
+
+    .loading-content {
+        text-align: center;
+    }
+
+    .spinner-large {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #e2e8f0;
+        border-top: 4px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem auto;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+        border: 1px solid #f1f5f9;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.6;
+    }
+
+    .empty-state h3 {
+        color: #1e293b;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+
+    .btn-clear-filters {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-clear-filters:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    }
+
+    .message-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        border-radius: 12px;
+        max-width: 400px;
+        animation: slideUp 0.4s ease-out;
+        z-index: 1000;
+    }
+
+    .message-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+    }
+
+    .message-icon {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .message-container.success {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .message-container.success .message-icon {
+        color: #059669;
+    }
+
+    .message-container.error {
+        background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    .message-container.error .message-icon {
+        color: #dc2626;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @@media (max-width: 768px) {
+        .stock-photos-container {
+            padding: 1rem;
+        }
+        
+        .page-header {
+            padding: 1.5rem;
+        }
+        
+        .header-content h1 {
+            font-size: 2rem;
+        }
+        
+        .photos-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .photo-footer {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+        
+        .btn-download {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+@code {
+    private List<StockPhotoModel> allPhotos = new();
+    private List<StockPhotoModel> filteredPhotos = new();
+    private bool isLoading = true;
+    private string searchTerm = "";
+    private string selectedCategory = "";
+    private HashSet<string> imageErrors = new();
+    private string message = "";
+    private bool isSuccess = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPhotos();
+    }
+
+    private async Task LoadPhotos()
+    {
+        isLoading = true;
+        imageErrors.Clear();
+        StateHasChanged();
+
+        try
+        {
+            allPhotos = await StockPhotoService.GetStockPhotosAsync();
+            filteredPhotos = allPhotos.ToList();
+            
+            // Debug: Log image URLs
+            foreach (var photo in allPhotos.Where(p => !string.IsNullOrEmpty(p.ImageUrl)))
+            {
+                await JSRuntime.InvokeVoidAsync("console.log", $"Stock photo '{photo.Title}' image URL: {photo.ImageUrl}");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", $"Error loading photos: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void HandleImageError(StockPhotoModel photo)
+    {
+        imageErrors.Add(photo.Id);
+        StateHasChanged();
+        
+        JSRuntime.InvokeVoidAsync("console.error", $"Failed to load image for photo '{photo.Title}': {photo.ImageUrl}");
+    }
+
+    private void HandleSearch(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString() ?? "";
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        filteredPhotos = allPhotos.Where(photo =>
+            (string.IsNullOrEmpty(searchTerm) || 
+             photo.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+             photo.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+             photo.Tags.Any(tag => tag.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))) &&
+            (string.IsNullOrEmpty(selectedCategory) || photo.Category == selectedCategory)
+        ).ToList();
+        
+        StateHasChanged();
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = "";
+        selectedCategory = "";
+        filteredPhotos = allPhotos.ToList();
+        StateHasChanged();
+    }
+
+    private void ViewPhotoDetails(StockPhotoModel photo)
+    {
+        // Navigate to photo details page (implement later)
+        JSRuntime.InvokeVoidAsync("console.log", $"Viewing details for photo: {photo.Title}");
+    }
+
+    private async Task DownloadPhoto(StockPhotoModel photo)
+    {
+        try
+        {
+            // Increment download count
+            await StockPhotoService.IncrementDownloadAsync(photo.Id);
+            
+            // Trigger download
+            await JSRuntime.InvokeVoidAsync("eval", $"window.open('{photo.ImageUrl}', '_blank')");
+            
+            ShowMessage("Download started! Check your downloads folder.", true);
+        }
+        catch (Exception ex)
+        {
+            ShowMessage($"Error downloading photo: {ex.Message}", false);
+        }
+    }
+
+    private void ShowMessage(string msg, bool success)
+    {
+        message = msg;
+        isSuccess = success;
+        StateHasChanged();
+
+        Task.Delay(3000).ContinueWith(_ =>
+        {
+            message = "";
+            InvokeAsync(StateHasChanged);
+        });
+    }
+}
