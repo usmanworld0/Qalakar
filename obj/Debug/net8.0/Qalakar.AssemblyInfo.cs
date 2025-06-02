@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Qalakar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+830a21a7756756b1f1672154d309ed7f69c448ad")]
 [assembly: System.Reflection.AssemblyProductAttribute("Qalakar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Qalakar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
